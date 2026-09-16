@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    ports:
+      - "9000:9000"
+    command: php-fpm
+
+  webserver:
+    image: nginx:stable
+    volumes:
+      - ./:/var/www/html:ro
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+
+  composer:
+    image: composer:2
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
